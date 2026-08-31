@@ -106,3 +106,11 @@ function respostaSelecionada(indice, botao) {
         mostraPergunta();
     }, 500);
 }
+const botaoRecomecar = document.querySelector(".botao-recomecar");
+
+botaoRecomecar.addEventListener("click", () => {
+    atual = 0;
+    pontos = 0;
+
+    mostraPergunta();
+});
