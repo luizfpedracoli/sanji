@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1b1b2f;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.caixa-principal {
+    background-color: #1f4068;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding-right: 12px;
+}
+
+/* Estilo da Barra de Rolagem */
+.caixa-principal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.caixa-principal::-webkit-scrollbar-track {
+    background: #162447;
+    border-radius: 10px;
+}
+
+.caixa-principal::-webkit-scrollbar-thumb {
+    background: #e43f5a;
+    border-radius: 10px;
+}
+
+.caixa-principal::-webkit-scrollbar-thumb:hover {
+    background: #b71c1c;
+}
+
+.caixa-perguntas {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+}
+
+.caixa-alternativas button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    background-color: #e43f5a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.caixa-alternativas button:hover {
+    background-color: #162447;
+    transform: translateY(-2px);
+}
+
+/* Cores para Acerto e Erro */
+.caixa-alternativas button.correta {
+    background-color: #2e7d32;
+}
+
+.caixa-alternativas button.incorreta {
+    background-color: #e53935;
+}
+
+/* Animações de Entrada */
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animar {
+    animation: aparecer 0.4s ease-out;
+}
+.caixa-perguntas {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    font-weight: bold;
+    max-height: 90px;  /* Limita a altura para acionar a barra */
+    overflow-y: auto;  /* Ativa a rolagem */
+    padding-right: 8px;
+}
+
+/* Barra de rolagem específica da pergunta */
+.caixa-perguntas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.caixa-perguntas::-webkit-scrollbar-track {
+    background: #162447;
+    border-radius: 10px;
+}
+
+.caixa-perguntas::-webkit-scrollbar-thumb {
+    background: #e43f5a;
+    border-radius: 10px;
+}
