@@ -45,11 +45,9 @@ const perguntas = [
 let atual = 0;
 let perguntaAtual;
 
-for (const [indice, alternativa] of perguntaAtual.alternativas.entries()) 
 botaoAlternativas.addEventListener("click", () => {
-    respostaSelecionada(indice);
+    respostaSelecionada(indice, botaoAlternativas);
 });
-
 
 function mostraAlternativas() {
     for (const alternativa of perguntaAtual.alternativas) {
@@ -93,3 +91,18 @@ mostraPergunta();
 const progresso = document.querySelector(".progresso");
 
 let pontos = 0;
+
+function respostaSelecionada(indice, botao) {
+
+    if (indice === 0) {
+        pontos++;
+        botao.classList.add("correta");
+    } else {
+        botao.classList.add("incorreta");
+    }
+
+    setTimeout(() => {
+        atual++;
+        mostraPergunta();
+    }, 500);
+}

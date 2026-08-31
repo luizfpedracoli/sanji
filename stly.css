@@ -142,4 +142,11 @@ body {
     color: #dcdcdc;
     margin-bottom: 15px;
 }
+.caixa-alternativas button.correta {
+    background-color: #2e7d32;
+}
+
+.caixa-alternativas button.incorreta {
+    background-color: #e53935;
+}
 }
