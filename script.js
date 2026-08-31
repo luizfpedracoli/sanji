@@ -82,3 +82,5 @@ void caixaPerguntas.offsetWidth;
 
 caixaPerguntas.classList.add("animar");
 mostraPergunta();
+
+const progresso = document.querySelector(".progresso");
