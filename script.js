@@ -76,5 +76,9 @@ function mostraResultado() {
     caixaAlternativas.textContent = "";
     textoResultado.textContent = "Obrigado por responder sobre o uso da tecnologia na escola!";
 }
+caixaPerguntas.classList.remove("animar");
 
+void caixaPerguntas.offsetWidth;
+
+caixaPerguntas.classList.add("animar");
 mostraPergunta();
