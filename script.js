@@ -45,17 +45,11 @@ const perguntas = [
 let atual = 0;
 let perguntaAtual;
 
-function mostraPergunta() {
-    if (atual >= perguntas.length) {
-        mostraResultado();
-        return;
-    }
-    perguntaAtual = perguntas[atual];
-    progresso.textContent = `Pergunta ${atual + 1} de ${perguntas.length}`;
-    caixaPerguntas.textContent = perguntaAtual.enunciado;
-    caixaAlternativas.textContent = "";
-    mostraAlternativas();
-}
+for (const [indice, alternativa] of perguntaAtual.alternativas.entries()) 
+botaoAlternativas.addEventListener("click", () => {
+    respostaSelecionada(indice);
+});
+
 
 function mostraAlternativas() {
     for (const alternativa of perguntaAtual.alternativas) {
