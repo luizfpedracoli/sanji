@@ -67,8 +67,14 @@ function mostraAlternativas() {
     }
 }
 
-function respostaSelecionada() {
+function respostaSelecionada(indice) {
+
+    if (indice === 0) {
+        pontos++;
+    }
+
     atual++;
+
     mostraPergunta();
 }
 
@@ -85,3 +91,5 @@ caixaPerguntas.classList.add("animar");
 mostraPergunta();
 
 const progresso = document.querySelector(".progresso");
+
+let pontos = 0;
