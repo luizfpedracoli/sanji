@@ -73,9 +73,15 @@ function respostaSelecionada(indice) {
 }
 
 function mostraResultado() {
+
     caixaPerguntas.textContent = "Fim do Questionário!";
+
     caixaAlternativas.textContent = "";
-    textoResultado.textContent = "Obrigado por responder sobre o uso da tecnologia na escola!";
+
+    progresso.textContent = "";
+
+    textoResultado.textContent =
+        `Você acertou ${pontos} de ${perguntas.length} perguntas!`;
 }
 caixaPerguntas.classList.remove("animar");
 
