@@ -136,4 +136,10 @@ body {
 .animar {
     animation: aparecer 0.4s ease;
 }
+
+.progresso {
+    font-size: 0.9rem;
+    color: #dcdcdc;
+    margin-bottom: 15px;
+}
 }
