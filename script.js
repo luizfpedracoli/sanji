@@ -51,6 +51,7 @@ function mostraPergunta() {
         return;
     }
     perguntaAtual = perguntas[atual];
+    progresso.textContent = `Pergunta ${atual + 1} de ${perguntas.length}`;
     caixaPerguntas.textContent = perguntaAtual.enunciado;
     caixaAlternativas.textContent = "";
     mostraAlternativas();
