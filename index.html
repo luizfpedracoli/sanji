@@ -1,98 +1,450 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Shadow Survivor</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#050816">
+
+    <title>SHADOW SURVIVOR</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div id="menu" class="screen">
-        <div class="menu-box">
-            <h1>⚔️ SHADOW SURVIVOR</h1>
+    <!-- ================================
+         BACKGROUND
+    ================================= -->
 
-            <p>Sobreviva o máximo que conseguir!</p>
+    <div class="background">
 
-            <div class="controls">
-                <p>🎮 <b>WASD</b> ou <b>Setas</b> — Mover</p>
-                <p>🖱️ <b>Mouse</b> — Mirar</p>
-                <p>🔫 <b>Clique</b> — Atirar</p>
-                <p>⚡ <b>Espaço</b> — Dash</p>
-            </div>
+        <div class="stars"></div>
 
-            <button id="startButton">JOGAR</button>
-        </div>
-    </div>
+        <div class="grid"></div>
 
-    <div id="gameUI">
-
-        <div class="top-bar">
-
-            <div class="stat">
-                ❤️
-                <div class="bar">
-                    <div id="healthBar" class="health"></div>
-                </div>
-            </div>
-
-            <div class="stat">
-                ⭐
-                <div class="bar">
-                    <div id="xpBar" class="xp"></div>
-                </div>
-            </div>
-
-            <div class="info">
-                <span>🏆 <b id="score">0</b></span>
-                <span>🪙 <b id="coins">0</b></span>
-                <span>⚔️ Nível <b id="level">1</b></span>
-                <span>👹 Onda <b id="wave">1</b></span>
-            </div>
-
-        </div>
+        <div class="glow glow-one"></div>
+        <div class="glow glow-two"></div>
 
     </div>
+
+
+    <!-- ================================
+         MENU PRINCIPAL
+    ================================= -->
+
+    <section id="menu" class="screen">
+
+        <div class="menu-container">
+
+            <div class="logo">
+
+                <div class="logo-small">
+                    SURVIVAL PROTOCOL
+                </div>
+
+                <h1>
+                    SHADOW
+                    <span>SURVIVOR</span>
+                </h1>
+
+                <div class="logo-line"></div>
+
+                <p>
+                    O mundo caiu.
+                    <br>
+                    Você é a última esperança.
+                </p>
+
+            </div>
+
+
+            <div class="menu-buttons">
+
+                <button
+                    id="startButton"
+                    class="main-button"
+                >
+                    <span>▶</span>
+                    INICIAR MISSÃO
+                </button>
+
+                <button
+                    id="howButton"
+                    class="secondary-button"
+                >
+                    ⚙ COMO JOGAR
+                </button>
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <div>
+                    <span>BEST SCORE</span>
+                    <strong id="menuBestScore">0</strong>
+                </div>
+
+                <div>
+                    <span>VERSÃO</span>
+                    <strong>2.0</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="copyright">
+            SHADOW SURVIVOR © 2026
+        </div>
+
+    </section>
+
+
+    <!-- ================================
+         COMO JOGAR
+    ================================= -->
+
+    <section
+        id="howToPlay"
+        class="screen hidden"
+    >
+
+        <div class="modal">
+
+            <button
+                id="closeHow"
+                class="close-button"
+            >
+                ×
+            </button>
+
+            <h2>COMO JOGAR</h2>
+
+            <div class="instructions">
+
+                <div class="instruction">
+                    <span>⌨️</span>
+                    <div>
+                        <strong>MOVIMENTO</strong>
+                        <p>Use WASD ou as setas.</p>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <span>🖱️</span>
+                    <div>
+                        <strong>ATAQUE</strong>
+                        <p>Mire com o mouse e clique para disparar.</p>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <span>⚡</span>
+                    <div>
+                        <strong>DASH</strong>
+                        <p>Pressione espaço para avançar rapidamente.</p>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <span>⭐</span>
+                    <div>
+                        <strong>EVOLUÇÃO</strong>
+                        <p>Derrote inimigos para ganhar XP e upgrades.</p>
+                    </div>
+                </div>
+
+                <div class="instruction">
+                    <span>👑</span>
+                    <div>
+                        <strong>CHEFÕES</strong>
+                        <p>Sobreviva às ondas e enfrente inimigos especiais.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================================
+         HUD
+    ================================= -->
+
+    <div
+        id="gameUI"
+        class="hidden"
+    >
+
+        <header class="hud">
+
+            <div class="player-status">
+
+                <div class="avatar">
+                    S
+                </div>
+
+                <div class="bars">
+
+                    <div class="bar-container">
+
+                        <div class="bar-label">
+                            <span>HP</span>
+                            <span>
+                                <b id="healthText">100</b>
+                                /
+                                <b id="maxHealthText">100</b>
+                            </span>
+                        </div>
+
+                        <div class="bar">
+                            <div
+                                id="healthBar"
+                                class="health-bar"
+                            ></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="bar-container">
+
+                        <div class="bar-label">
+                            <span>XP</span>
+                            <span>
+                                LV.
+                                <b id="level">1</b>
+                            </span>
+                        </div>
+
+                        <div class="bar xp-background">
+                            <div
+                                id="xpBar"
+                                class="xp-bar"
+                            ></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="wave-display">
+
+                <span>WAVE</span>
+
+                <strong id="wave">
+                    01
+                </strong>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+                    <small>SCORE</small>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="stat">
+                    <small>COINS</small>
+                    <strong id="coins">
+                        🪙 0
+                    </strong>
+                </div>
+
+                <div class="stat">
+                    <small>TIME</small>
+                    <strong id="gameTime">
+                        00:00
+                    </strong>
+                </div>
+
+            </div>
+
+        </header>
+
+    </div>
+
+
+    <!-- ================================
+         BOSS BAR
+    ================================= -->
+
+    <div
+        id="bossUI"
+        class="boss-ui hidden"
+    >
+
+        <div class="boss-name">
+            ⚠️ ELITE THREAT
+        </div>
+
+        <div class="boss-bar">
+            <div id="bossBar"></div>
+        </div>
+
+    </div>
+
+
+    <!-- ================================
+         CANVAS
+    ================================= -->
 
     <canvas id="gameCanvas"></canvas>
 
-    <div id="levelUp" class="screen hidden">
 
-        <div class="upgrade-box">
+    <!-- ================================
+         LEVEL UP
+    ================================= -->
 
-            <h2>⚡ SUBIU DE NÍVEL!</h2>
+    <section
+        id="levelUp"
+        class="screen hidden"
+    >
 
-            <p>Escolha uma melhoria:</p>
+        <div class="upgrade-modal">
+
+            <div class="upgrade-title">
+
+                <span>LEVEL UP</span>
+
+                <h2>
+                    ESCOLHA SUA EVOLUÇÃO
+                </h2>
+
+                <p>
+                    Selecione uma habilidade para continuar.
+                </p>
+
+            </div>
 
             <div id="upgradeOptions"></div>
 
         </div>
 
-    </div>
+    </section>
 
-    <div id="gameOver" class="screen hidden">
 
-        <div class="menu-box">
+    <!-- ================================
+         GAME OVER
+    ================================= -->
 
-            <h1>💀 GAME OVER</h1>
+    <section
+        id="gameOver"
+        class="screen hidden"
+    >
 
-            <p>Você sobreviveu por <b id="finalTime">0</b> segundos.</p>
-            <p>🏆 Pontuação: <b id="finalScore">0</b></p>
-            <p>🪙 Moedas: <b id="finalCoins">0</b></p>
-            <p>⚔️ Nível: <b id="finalLevel">1</b></p>
+        <div class="game-over">
 
-            <button id="restartButton">JOGAR NOVAMENTE</button>
+            <div class="danger">
+                SYSTEM FAILURE
+            </div>
+
+            <h1>
+                VOCÊ FOI<br>
+                <span>DERROTADO</span>
+            </h1>
+
+            <div class="final-stats">
+
+                <div>
+                    <small>SCORE</small>
+                    <strong id="finalScore">0</strong>
+                </div>
+
+                <div>
+                    <small>WAVE</small>
+                    <strong id="finalWave">1</strong>
+                </div>
+
+                <div>
+                    <small>LEVEL</small>
+                    <strong id="finalLevel">1</strong>
+                </div>
+
+                <div>
+                    <small>TEMPO</small>
+                    <strong id="finalTime">00:00</strong>
+                </div>
+
+            </div>
+
+            <div
+                id="newRecord"
+                class="new-record hidden"
+            >
+                🏆 NOVO RECORDE!
+            </div>
+
+            <button
+                id="restartButton"
+                class="main-button"
+            >
+                ↻ TENTAR NOVAMENTE
+            </button>
+
+            <button
+                id="menuButton"
+                class="secondary-button"
+            >
+                VOLTAR AO MENU
+            </button>
 
         </div>
 
+    </section>
+
+
+    <!-- ================================
+         MOBILE CONTROLS
+    ================================= -->
+
+    <div
+        id="mobileControls"
+        class="mobile-controls hidden"
+    >
+
+        <div class="joystick">
+
+            <button data-key="w">▲</button>
+
+            <div>
+                <button data-key="a">◀</button>
+                <button data-key="s">▼</button>
+                <button data-key="d">▶</button>
+            </div>
+
+        </div>
+
+        <button
+            id="mobileDash"
+            class="dash-button"
+        >
+            ⚡
+        </button>
+
     </div>
+
 
     <script src="script.js"></script>
 
 </body>
+
 </html>
+
 
