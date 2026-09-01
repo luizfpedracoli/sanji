@@ -1,32 +1,92 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Tecnologia na Escola</title>
+    <title>Shadow Survivor</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="caixa-principal">
+    <div id="menu" class="screen">
+        <div class="menu-box">
+            <h1>⚔️ SHADOW SURVIVOR</h1>
 
-        <h1>Tecnologia na Escola</h1>
+            <p>Sobreviva o máximo que conseguir!</p>
 
-        <p class="progresso"></p>
+            <div class="controls">
+                <p>🎮 <b>WASD</b> ou <b>Setas</b> — Mover</p>
+                <p>🖱️ <b>Mouse</b> — Mirar</p>
+                <p>🔫 <b>Clique</b> — Atirar</p>
+                <p>⚡ <b>Espaço</b> — Dash</p>
+            </div>
 
-        <div class="caixa-perguntas"></div>
+            <button id="startButton">JOGAR</button>
+        </div>
+    </div>
 
-        <div class="caixa-alternativas"></div>
+    <div id="gameUI">
 
-        <div class="caixa-resultado">
-            <p class="texto-resultado"></p>
+        <div class="top-bar">
 
-            <button class="botao-recomecar">Recomeçar</button>
+            <div class="stat">
+                ❤️
+                <div class="bar">
+                    <div id="healthBar" class="health"></div>
+                </div>
+            </div>
+
+            <div class="stat">
+                ⭐
+                <div class="bar">
+                    <div id="xpBar" class="xp"></div>
+                </div>
+            </div>
+
+            <div class="info">
+                <span>🏆 <b id="score">0</b></span>
+                <span>🪙 <b id="coins">0</b></span>
+                <span>⚔️ Nível <b id="level">1</b></span>
+                <span>👹 Onda <b id="wave">1</b></span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="levelUp" class="screen hidden">
+
+        <div class="upgrade-box">
+
+            <h2>⚡ SUBIU DE NÍVEL!</h2>
+
+            <p>Escolha uma melhoria:</p>
+
+            <div id="upgradeOptions"></div>
+
+        </div>
+
+    </div>
+
+    <div id="gameOver" class="screen hidden">
+
+        <div class="menu-box">
+
+            <h1>💀 GAME OVER</h1>
+
+            <p>Você sobreviveu por <b id="finalTime">0</b> segundos.</p>
+            <p>🏆 Pontuação: <b id="finalScore">0</b></p>
+            <p>🪙 Moedas: <b id="finalCoins">0</b></p>
+            <p>⚔️ Nível: <b id="finalLevel">1</b></p>
+
+            <button id="restartButton">JOGAR NOVAMENTE</button>
+
         </div>
 
     </div>
@@ -34,6 +94,5 @@
     <script src="script.js"></script>
 
 </body>
-
 </html>
-
+```
