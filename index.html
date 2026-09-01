@@ -1,450 +1,231 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
-
-    <meta name="theme-color" content="#050816">
-
-    <title>SHADOW SURVIVOR</title>
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo Brick Breaker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2rem;
+    }
+    #game-container {
+      position: relative;
+    }
+    canvas {
+      background: #1e293b;
+      border: 4px solid #38bdf8;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    .instructions {
+      margin-top: 15px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
-
 <body>
 
-    <!-- ================================
-         BACKGROUND
-    ================================= -->
-
-    <div class="background">
-
-        <div class="stars"></div>
-
-        <div class="grid"></div>
-
-        <div class="glow glow-one"></div>
-        <div class="glow glow-two"></div>
-
-    </div>
-
-
-    <!-- ================================
-         MENU PRINCIPAL
-    ================================= -->
-
-    <section id="menu" class="screen">
-
-        <div class="menu-container">
-
-            <div class="logo">
-
-                <div class="logo-small">
-                    SURVIVAL PROTOCOL
-                </div>
-
-                <h1>
-                    SHADOW
-                    <span>SURVIVOR</span>
-                </h1>
-
-                <div class="logo-line"></div>
-
-                <p>
-                    O mundo caiu.
-                    <br>
-                    Você é a última esperança.
-                </p>
-
-            </div>
-
-
-            <div class="menu-buttons">
-
-                <button
-                    id="startButton"
-                    class="main-button"
-                >
-                    <span>▶</span>
-                    INICIAR MISSÃO
-                </button>
-
-                <button
-                    id="howButton"
-                    class="secondary-button"
-                >
-                    ⚙ COMO JOGAR
-                </button>
-
-            </div>
-
-
-            <div class="menu-info">
-
-                <div>
-                    <span>BEST SCORE</span>
-                    <strong id="menuBestScore">0</strong>
-                </div>
-
-                <div>
-                    <span>VERSÃO</span>
-                    <strong>2.0</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="copyright">
-            SHADOW SURVIVOR © 2026
-        </div>
-
-    </section>
-
-
-    <!-- ================================
-         COMO JOGAR
-    ================================= -->
-
-    <section
-        id="howToPlay"
-        class="screen hidden"
-    >
-
-        <div class="modal">
-
-            <button
-                id="closeHow"
-                class="close-button"
-            >
-                ×
-            </button>
-
-            <h2>COMO JOGAR</h2>
-
-            <div class="instructions">
-
-                <div class="instruction">
-                    <span>⌨️</span>
-                    <div>
-                        <strong>MOVIMENTO</strong>
-                        <p>Use WASD ou as setas.</p>
-                    </div>
-                </div>
-
-                <div class="instruction">
-                    <span>🖱️</span>
-                    <div>
-                        <strong>ATAQUE</strong>
-                        <p>Mire com o mouse e clique para disparar.</p>
-                    </div>
-                </div>
-
-                <div class="instruction">
-                    <span>⚡</span>
-                    <div>
-                        <strong>DASH</strong>
-                        <p>Pressione espaço para avançar rapidamente.</p>
-                    </div>
-                </div>
-
-                <div class="instruction">
-                    <span>⭐</span>
-                    <div>
-                        <strong>EVOLUÇÃO</strong>
-                        <p>Derrote inimigos para ganhar XP e upgrades.</p>
-                    </div>
-                </div>
-
-                <div class="instruction">
-                    <span>👑</span>
-                    <div>
-                        <strong>CHEFÕES</strong>
-                        <p>Sobreviva às ondas e enfrente inimigos especiais.</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================
-         HUD
-    ================================= -->
-
-    <div
-        id="gameUI"
-        class="hidden"
-    >
-
-        <header class="hud">
-
-            <div class="player-status">
-
-                <div class="avatar">
-                    S
-                </div>
-
-                <div class="bars">
-
-                    <div class="bar-container">
-
-                        <div class="bar-label">
-                            <span>HP</span>
-                            <span>
-                                <b id="healthText">100</b>
-                                /
-                                <b id="maxHealthText">100</b>
-                            </span>
-                        </div>
-
-                        <div class="bar">
-                            <div
-                                id="healthBar"
-                                class="health-bar"
-                            ></div>
-                        </div>
-
-                    </div>
-
-
-                    <div class="bar-container">
-
-                        <div class="bar-label">
-                            <span>XP</span>
-                            <span>
-                                LV.
-                                <b id="level">1</b>
-                            </span>
-                        </div>
-
-                        <div class="bar xp-background">
-                            <div
-                                id="xpBar"
-                                class="xp-bar"
-                            ></div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="wave-display">
-
-                <span>WAVE</span>
-
-                <strong id="wave">
-                    01
-                </strong>
-
-            </div>
-
-
-            <div class="stats">
-
-                <div class="stat">
-                    <small>SCORE</small>
-                    <strong id="score">0</strong>
-                </div>
-
-                <div class="stat">
-                    <small>COINS</small>
-                    <strong id="coins">
-                        🪙 0
-                    </strong>
-                </div>
-
-                <div class="stat">
-                    <small>TIME</small>
-                    <strong id="gameTime">
-                        00:00
-                    </strong>
-                </div>
-
-            </div>
-
-        </header>
-
-    </div>
-
-
-    <!-- ================================
-         BOSS BAR
-    ================================= -->
-
-    <div
-        id="bossUI"
-        class="boss-ui hidden"
-    >
-
-        <div class="boss-name">
-            ⚠️ ELITE THREAT
-        </div>
-
-        <div class="boss-bar">
-            <div id="bossBar"></div>
-        </div>
-
-    </div>
-
-
-    <!-- ================================
-         CANVAS
-    ================================= -->
-
-    <canvas id="gameCanvas"></canvas>
-
-
-    <!-- ================================
-         LEVEL UP
-    ================================= -->
-
-    <section
-        id="levelUp"
-        class="screen hidden"
-    >
-
-        <div class="upgrade-modal">
-
-            <div class="upgrade-title">
-
-                <span>LEVEL UP</span>
-
-                <h2>
-                    ESCOLHA SUA EVOLUÇÃO
-                </h2>
-
-                <p>
-                    Selecione uma habilidade para continuar.
-                </p>
-
-            </div>
-
-            <div id="upgradeOptions"></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================
-         GAME OVER
-    ================================= -->
-
-    <section
-        id="gameOver"
-        class="screen hidden"
-    >
-
-        <div class="game-over">
-
-            <div class="danger">
-                SYSTEM FAILURE
-            </div>
-
-            <h1>
-                VOCÊ FOI<br>
-                <span>DERROTADO</span>
-            </h1>
-
-            <div class="final-stats">
-
-                <div>
-                    <small>SCORE</small>
-                    <strong id="finalScore">0</strong>
-                </div>
-
-                <div>
-                    <small>WAVE</small>
-                    <strong id="finalWave">1</strong>
-                </div>
-
-                <div>
-                    <small>LEVEL</small>
-                    <strong id="finalLevel">1</strong>
-                </div>
-
-                <div>
-                    <small>TEMPO</small>
-                    <strong id="finalTime">00:00</strong>
-                </div>
-
-            </div>
-
-            <div
-                id="newRecord"
-                class="new-record hidden"
-            >
-                🏆 NOVO RECORDE!
-            </div>
-
-            <button
-                id="restartButton"
-                class="main-button"
-            >
-                ↻ TENTAR NOVAMENTE
-            </button>
-
-            <button
-                id="menuButton"
-                class="secondary-button"
-            >
-                VOLTAR AO MENU
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================================
-         MOBILE CONTROLS
-    ================================= -->
-
-    <div
-        id="mobileControls"
-        class="mobile-controls hidden"
-    >
-
-        <div class="joystick">
-
-            <button data-key="w">▲</button>
-
-            <div>
-                <button data-key="a">◀</button>
-                <button data-key="s">▼</button>
-                <button data-key="d">▶</button>
-            </div>
-
-        </div>
-
-        <button
-            id="mobileDash"
-            class="dash-button"
-        >
-            ⚡
-        </button>
-
-    </div>
-
-
-    <script src="script.js"></script>
-
+  <h1>Brick Breaker</h1>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="480" height="320"></canvas>
+  </div>
+  <p class="instructions">Use as setas ⬅️ e ➡️ do teclado para mover a raquete.</p>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Configurações do jogo
+    let score = 0;
+    let lives = 3;
+
+    // Bola
+    let x = canvas.width / 2;
+    let y = canvas.height - 30;
+    let dx = 3;
+    let dy = -3;
+    const ballRadius = 8;
+
+    // Raquete
+    const paddleHeight = 10;
+    const paddleWidth = 75;
+    let paddleX = (canvas.width - paddleWidth) / 2;
+    let rightPressed = false;
+    let leftPressed = false;
+
+    // Tijolos
+    const brickRowCount = 3;
+    const brickColumnCount = 5;
+    const brickWidth = 75;
+    const brickHeight = 20;
+    const brickPadding = 10;
+    const brickOffsetTop = 30;
+    const brickOffsetLeft = 30;
+
+    const bricks = [];
+    for (let c = 0; c < brickColumnCount; c++) {
+      bricks[c] = [];
+      for (let r = 0; r < brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
+      }
+    }
+
+    // Eventos de teclado
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+      if (e.key === "Right" || e.key === "ArrowRight") {
+        rightPressed = true;
+      } else if (e.key === "Left" || e.key === "ArrowLeft") {
+        leftPressed = true;
+      }
+    }
+
+    function keyUpHandler(e) {
+      if (e.key === "Right" || e.key === "ArrowRight") {
+        rightPressed = false;
+      } else if (e.key === "Left" || e.key === "ArrowLeft") {
+        leftPressed = false;
+      }
+    }
+
+    // Detecção de colisão com os tijolos
+    function collisionDetection() {
+      for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+          const b = bricks[c][r];
+          if (b.status === 1) {
+            if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
+              dy = -dy;
+              b.status = 0;
+              score++;
+              if (score === brickRowCount * brickColumnCount) {
+                alert("PARABÉNS! Você venceu!");
+                document.location.reload();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Desenhar elementos
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawPaddle() {
+      ctx.beginPath();
+      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+      ctx.fillStyle = "#f43f5e";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function drawBricks() {
+      for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
+          if (bricks[c][r].status === 1) {
+            const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
+            const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#a855f7";
+            ctx.fill();
+            ctx.closePath();
+          }
+        }
+      }
+    }
+
+    function drawScore() {
+      ctx.font = "14px system-ui";
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText(`Pontos: ${score}`, 8, 20);
+    }
+
+    function drawLives() {
+      ctx.font = "14px system-ui";
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillText(`Vidas: ${lives}`, canvas.width - 65, 20);
+    }
+
+    // Loop principal
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
+      drawBall();
+      drawPaddle();
+      drawScore();
+      drawLives();
+      collisionDetection();
+
+      // Colisão com paredes laterais
+      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+      }
+
+      // Colisão com topo
+      if (y + dy < ballRadius) {
+        dy = -dy;
+      } else if (y + dy > canvas.height - ballRadius) {
+        // Colisão com a raquete
+        if (x > paddleX && x < paddleX + paddleWidth) {
+          dy = -dy;
+        } else {
+          // Perdeu vida
+          lives--;
+          if (!lives) {
+            alert("GAME OVER!");
+            document.location.reload();
+          } else {
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            dx = 3;
+            dy = -3;
+            paddleX = (canvas.width - paddleWidth) / 2;
+          }
+        }
+      }
+
+      // Movimento da raquete
+      if (rightPressed && paddleX < canvas.width - paddleWidth) {
+        paddleX += 5;
+      } else if (leftPressed && paddleX > 0) {
+        paddleX -= 5;
+      }
+
+      x += dx;
+      y += dy;
+
+      requestAnimationFrame(draw);
+    }
+
+    draw();
+  </script>
 </body>
-
 </html>
-
-
