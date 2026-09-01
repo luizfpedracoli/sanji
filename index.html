@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo Brick Breaker</title>
+  <title>Brick Breaker Deluxe</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,7 +22,9 @@
     }
     h1 {
       margin-bottom: 10px;
-      font-size: 2rem;
+      font-size: 2.2rem;
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
     #game-container {
       position: relative;
@@ -31,22 +33,22 @@
       background: #1e293b;
       border: 4px solid #38bdf8;
       border-radius: 8px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
     .instructions {
       margin-top: 15px;
       color: #94a3b8;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
   </style>
 </head>
 <body>
 
-  <h1>Brick Breaker</h1>
+  <h1>Brick Breaker Deluxe</h1>
   <div id="game-container">
-    <canvas id="gameCanvas" width="480" height="320"></canvas>
+    <canvas id="gameCanvas" width="520" height="380"></canvas>
   </div>
-  <p class="instructions">Use as setas ⬅️ e ➡️ do teclado para mover a raquete.</p>
+  <p class="instructions">Use ⬅️ ➡️ para mover. Blocos roxos precisam de 2 hits! Pegue os Power-ups ⭐</p>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
@@ -57,72 +59,132 @@
     let lives = 3;
 
     // Bola
+    let ballRadius = 8;
     let x = canvas.width / 2;
     let y = canvas.height - 30;
-    let dx = 3;
-    let dy = -3;
-    const ballRadius = 8;
+    let speed = 3.5;
+    let dx = speed;
+    let dy = -speed;
 
     // Raquete
-    const paddleHeight = 10;
-    const paddleWidth = 75;
+    const paddleHeight = 12;
+    let paddleWidth = 85;
     let paddleX = (canvas.width - paddleWidth) / 2;
     let rightPressed = false;
     let leftPressed = false;
 
     // Tijolos
-    const brickRowCount = 3;
-    const brickColumnCount = 5;
-    const brickWidth = 75;
+    const brickRowCount = 4;
+    const brickColumnCount = 6;
+    const brickWidth = 70;
     const brickHeight = 20;
     const brickPadding = 10;
-    const brickOffsetTop = 30;
-    const brickOffsetLeft = 30;
+    const brickOffsetTop = 40;
+    const brickOffsetLeft = 22;
 
     const bricks = [];
     for (let c = 0; c < brickColumnCount; c++) {
       bricks[c] = [];
       for (let r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y: 0, status: 1 };
+        // Linha 0 tem tijolos duplos (hp=2)
+        const hp = r === 0 ? 2 : 1;
+        bricks[c][r] = { x: 0, y: 0, hp: hp };
       }
     }
 
-    // Eventos de teclado
+    // Power-ups
+    const powerUps = [];
+    const particles = [];
+
+    // Controles
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
 
     function keyDownHandler(e) {
-      if (e.key === "Right" || e.key === "ArrowRight") {
-        rightPressed = true;
-      } else if (e.key === "Left" || e.key === "ArrowLeft") {
-        leftPressed = true;
-      }
+      if (e.key === "Right" || e.key === "ArrowRight") rightPressed = true;
+      else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = true;
     }
 
     function keyUpHandler(e) {
-      if (e.key === "Right" || e.key === "ArrowRight") {
-        rightPressed = false;
-      } else if (e.key === "Left" || e.key === "ArrowLeft") {
-        leftPressed = false;
+      if (e.key === "Right" || e.key === "ArrowRight") rightPressed = false;
+      else if (e.key === "Left" || e.key === "ArrowLeft") leftPressed = false;
+    }
+
+    // Criar efeito de explosão
+    function createParticles(x, y, color) {
+      for (let i = 0; i < 8; i++) {
+        particles.push({
+          x: x,
+          y: y,
+          dx: (Math.random() - 0.5) * 4,
+          dy: (Math.random() - 0.5) * 4,
+          radius: Math.random() * 3 + 1,
+          color: color,
+          alpha: 1
+        });
       }
     }
 
-    // Detecção de colisão com os tijolos
+    // Colisão com os blocos
     function collisionDetection() {
+      let activeBricks = 0;
       for (let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
           const b = bricks[c][r];
-          if (b.status === 1) {
+          if (b.hp > 0) {
+            activeBricks++;
             if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
               dy = -dy;
-              b.status = 0;
-              score++;
-              if (score === brickRowCount * brickColumnCount) {
-                alert("PARABÉNS! Você venceu!");
+              b.hp--;
+              score += 10;
+              
+              // Aumenta ligeiramente a velocidade
+              speed += 0.05;
+              
+              // Efeito de partículas
+              const color = b.hp === 1 ? "#a855f7" : "#38bdf8";
+              createParticles(x, y, color);
+
+              // Chance de dropar Power-up (20% ao quebrar)
+              if (b.hp === 0 && Math.random() < 0.25) {
+                const types = ["expand", "shrink", "life"];
+                const type = types[Math.floor(Math.random() * types.length)];
+                powerUps.push({ x: b.x + brickWidth / 2, y: b.y, type: type });
+              }
+
+              if (activeBricks === 1 && b.hp === 0) {
+                alert("SENSACIONAL! Você destruiu todos os blocos!");
                 document.location.reload();
               }
             }
           }
+        }
+      }
+    }
+
+    // Atualizar Power-ups
+    function updatePowerUps() {
+      for (let i = powerUps.length - 1; i >= 0; i--) {
+        const p = powerUps[i];
+        p.y += 2;
+
+        // Desenhar Power-up
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+        if (p.type === "expand") ctx.fillStyle = "#22c55e"; // Verde: Aumenta raquete
+        else if (p.type === "shrink") ctx.fillStyle = "#ef4444"; // Vermelho: Diminui raquete
+        else if (p.type === "life") ctx.fillStyle = "#eab308"; // Amarelo: Vida Extra
+        ctx.fill();
+        ctx.closePath();
+
+        // Pegar Power-up com a raquete
+        if (p.y + 8 >= canvas.height - paddleHeight && p.x > paddleX && p.x < paddleX + paddleWidth) {
+          if (p.type === "expand") paddleWidth = Math.min(140, paddleWidth + 25);
+          else if (p.type === "shrink") paddleWidth = Math.max(50, paddleWidth - 20);
+          else if (p.type === "life") lives++;
+          powerUps.splice(i, 1);
+        } else if (p.y > canvas.height) {
+          powerUps.splice(i, 1);
         }
       }
     }
@@ -132,7 +194,10 @@
       ctx.beginPath();
       ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
       ctx.fillStyle = "#38bdf8";
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = "#38bdf8";
       ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.closePath();
     }
 
@@ -147,14 +212,17 @@
     function drawBricks() {
       for (let c = 0; c < brickColumnCount; c++) {
         for (let r = 0; r < brickRowCount; r++) {
-          if (bricks[c][r].status === 1) {
+          const b = bricks[c][r];
+          if (b.hp > 0) {
             const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
             const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
+            b.x = brickX;
+            b.y = brickY;
             ctx.beginPath();
             ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#a855f7";
+            
+            // Blocos de HP=2 são Roxos, HP=1 são Rosas
+            ctx.fillStyle = b.hp === 2 ? "#a855f7" : "#ec4899";
             ctx.fill();
             ctx.closePath();
           }
@@ -162,61 +230,83 @@
       }
     }
 
-    function drawScore() {
-      ctx.font = "14px system-ui";
-      ctx.fillStyle = "#f8fafc";
-      ctx.fillText(`Pontos: ${score}`, 8, 20);
+    function drawParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.dx;
+        p.y += p.dy;
+        p.alpha -= 0.03;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        ctx.restore();
+      }
     }
 
-    function drawLives() {
-      ctx.font = "14px system-ui";
+    function drawUI() {
+      ctx.font = "bold 14px system-ui";
       ctx.fillStyle = "#f8fafc";
-      ctx.fillText(`Vidas: ${lives}`, canvas.width - 65, 20);
+      ctx.fillText(`Pontos: ${score}`, 15, 25);
+      ctx.fillText(`Vidas: ${lives}`, canvas.width - 80, 25);
     }
 
-    // Loop principal
+    // Loop principal de renderização
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       drawBricks();
       drawBall();
       drawPaddle();
-      drawScore();
-      drawLives();
+      drawParticles();
+      updatePowerUps();
+      drawUI();
       collisionDetection();
 
-      // Colisão com paredes laterais
+      // Parede lateral
       if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
       }
 
-      // Colisão com topo
+      // Topo
       if (y + dy < ballRadius) {
         dy = -dy;
       } else if (y + dy > canvas.height - ballRadius) {
-        // Colisão com a raquete
+        // Colisão com a raquete (ângulo ajustável dependendo do ponto de impacto)
         if (x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
+          let hitPoint = (x - (paddleX + paddleWidth / 2)) / (paddleWidth / 2);
+          dx = hitPoint * speed;
+          dy = -Math.sqrt(Math.max(1, speed * speed - dx * dx));
         } else {
-          // Perdeu vida
           lives--;
           if (!lives) {
-            alert("GAME OVER!");
+            alert("GAME OVER! Pontuação final: " + score);
             document.location.reload();
           } else {
+            // Resetar posição da bola
             x = canvas.width / 2;
             y = canvas.height - 30;
-            dx = 3;
-            dy = -3;
+            speed = 3.5;
+            dx = speed;
+            dy = -speed;
             paddleX = (canvas.width - paddleWidth) / 2;
           }
         }
       }
 
-      // Movimento da raquete
+      // Movimento da Raquete
       if (rightPressed && paddleX < canvas.width - paddleWidth) {
-        paddleX += 5;
+        paddleX += 7;
       } else if (leftPressed && paddleX > 0) {
-        paddleX -= 5;
+        paddleX -= 7;
       }
 
       x += dx;
