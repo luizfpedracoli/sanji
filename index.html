@@ -1,224 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Jogo de Plataforma 2D</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    canvas {
-      border: 3px solid #fff;
-      background: #1a1a2e;
-    }
-    .instrucoes {
-      margin-top: 10px;
-      color: #ccc;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Jogo da Cobrinha no GitHub</title>
+    <style>
+        body { background: #111; color: #fff; text-align: center; font-family: sans-serif; }
+        canvas { border: 2px solid #fff; background: #000; margin-top: 20px; }
+    </style>
 </head>
 <body>
+    <h1>Jogo da Cobrinha</h1>
+    <canvas id="stage" width="400" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('stage');
+        const ctx = canvas.getContext('2d');
+        document.addEventListener('keydown', keyPush);
 
-  <h1>Jogo de Plataforma 2D</h1>
-  <canvas id="gameCanvas" width="800" height="400"></canvas>
-  <div class="instrucoes">Controles: Setas Esquerda/Direita (ou A/D) para andar | Seta Cima/Espaço para pular</div>
+        let velocity = { x: 0, y: 0 };
+        let position = { x: 10, y: 10 };
+        const grid = 20;
+        const count = 20;
+        let trail = [];
+        let tail = 5;
+        let apple = { x: 15, y: 15 };
 
-<script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+        function game() {
+            position.x += velocity.x;
+            position.y += velocity.y;
 
-// Estado do Jogo
-let pontuacao = 0;
-let gameOver = false;
+            if (position.x < 0) position.x = count - 1;
+            if (position.x > count - 1) position.x = 0;
+            if (position.y < 0) position.y = count - 1;
+            if (position.y > count - 1) position.y = 0;
 
-// Teclas pressionadas
-const keys = {};
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Jogador
-const player = {
-  x: 50,
-  y: 300,
-  width: 30,
-  height: 40,
-  speed: 4,
-  vx: 0,
-  vy: 0,
-  gravity: 0.5,
-  jumpStrength: -10,
-  grounded: false
-};
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(apple.x * grid, apple.y * grid, grid - 2, grid - 2);
 
-// Plataformas (x, y, largura, altura)
-const platforms = [
-  { x: 0, y: 360, width: 800, height: 40 },  // Chão
-  { x: 150, y: 280, width: 120, height: 15 },
-  { x: 350, y: 210, width: 150, height: 15 },
-  { x: 580, y: 150, width: 120, height: 15 },
-  { x: 100, y: 130, width: 100, height: 15 }
-];
+            ctx.fillStyle = '#0f0';
+            for (let i = 0; i < trail.length; i++) {
+                ctx.fillRect(trail[i].x * grid, trail[i].y * grid, grid - 2, grid - 2);
+                if (trail[i].x === position.x && trail[i].y === position.y) {
+                    tail = 5;
+                }
+            }
 
-// Moedas (x, y, raio, coletada)
-const coins = [
-  { x: 200, y: 240, radius: 8, collected: false },
-  { x: 420, y: 170, radius: 8, collected: false },
-  { x: 640, y: 110, radius: 8, collected: false },
-  { x: 140, y: 90, radius: 8, collected: false }
-];
+            trail.push({ x: position.x, y: position.y });
+            while (trail.length > tail) {
+                trail.shift();
+            }
 
-// Inimigo
-const enemy = {
-  x: 350,
-  y: 190,
-  width: 25,
-  height: 20,
-  vx: 2,
-  minX: 350,
-  maxX: 475
-};
+            if (apple.x === position.x && apple.y === position.y) {
+                tail++;
+                apple.x = Math.floor(Math.random() * count);
+                apple.y = Math.floor(Math.random() * count);
+            }
+        }
 
-// Listeners de teclado
-window.addEventListener('keydown', (e) => { keys[e.code] = true; });
-window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+        setInterval(game, 1000 / 10);
 
-// Loop Principal
-function update() {
-  if (gameOver) return;
-
-  // Movimento do Jogador
-  if (keys['ArrowRight'] || keys['KeyD']) {
-    player.vx = player.speed;
-  } else if (keys['ArrowLeft'] || keys['KeyA']) {
-    player.vx = -player.speed;
-  } else {
-    player.vx = 0;
-  }
-
-  // Pulo
-  if ((keys['ArrowUp'] || keys['Space'] || keys['KeyW']) && player.grounded) {
-    player.vy = player.jumpStrength;
-    player.grounded = false;
-  }
-
-  // Aplica Gravidade
-  player.vy += player.gravity;
-
-  // Atualiza Posição
-  player.x += player.vx;
-  player.y += player.vy;
-
-  // Colisão com Limites do Canvas (Esquerda / Direita)
-  if (player.x < 0) player.x = 0;
-  if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-
-  // Colisão com Plataformas
-  player.grounded = false;
-  for (let plat of platforms) {
-    if (
-      player.x < plat.x + plat.width &&
-      player.x + player.width > plat.x &&
-      player.y + player.height <= plat.y + player.vy &&
-      player.y + player.height + player.vy >= plat.y
-    ) {
-      player.grounded = true;
-      player.vy = 0;
-      player.y = plat.y - player.height;
-    }
-  }
-
-  // Movimento do Inimigo
-  enemy.x += enemy.vx;
-  if (enemy.x <= enemy.minX || enemy.x + enemy.width >= enemy.maxX) {
-    enemy.vx *= -1;
-  }
-
-  // Colisão com Inimigo
-  if (
-    player.x < enemy.x + enemy.width &&
-    player.x + player.width > enemy.x &&
-    player.y < enemy.y + enemy.height &&
-    player.y + player.height > enemy.y
-  ) {
-    gameOver = true;
-  }
-
-  // Coleta de Moedas
-  for (let coin of coins) {
-    if (!coin.collected) {
-      let dx = (player.x + player.width / 2) - coin.x;
-      let dy = (player.y + player.height / 2) - coin.y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < player.width / 2 + coin.radius) {
-        coin.collected = true;
-        pontuacao += 10;
-      }
-    }
-  }
-
-  draw();
-  requestAnimationFrame(update);
-}
-
-// Renderização dos elementos na tela
-function draw() {
-  // Limpa o Canvas
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Desenha Plataformas
-  ctx.fillStyle = '#4e54c8';
-  for (let plat of platforms) {
-    ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
-  }
-
-  // Desenha Moedas
-  ctx.fillStyle = '#ffd700';
-  for (let coin of coins) {
-    if (!coin.collected) {
-      ctx.beginPath();
-      ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  // Desenha Inimigo
-  ctx.fillStyle = '#ff4757';
-  ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
-
-  // Desenha Jogador
-  ctx.fillStyle = '#2ed573';
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-
-  // Interface de Pontuação
-  ctx.fillStyle = '#fff';
-  ctx.font = '18px Arial';
-  ctx.fillText('Pontos: ' + pontuacao, 15, 25);
-
-  // Tela de Game Over
-  if (gameOver) {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#ff4757';
-    ctx.font = '36px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 10);
-
-    ctx.fillStyle = '#fff';
-    ctx.font = '18px Arial';
-    ctx.fillText('Recarregue a página para jogar novamente', canvas.width / 2, canvas.height / 2 + 30);
-  }
-}
-
-// Inicia o Loop do Jogo
-update();
-</script>
+        function keyPush(evt) {
+            switch (evt.keyCode) {
+                case 37: velocity = { x: -1, y: 0 }; break; // Esquerda
+                case 38: velocity = { x: 0, y: -1 }; break; // Cima
+                case 39: velocity = { x: 1, y: 0 }; break;  // Direita
+                case 40: velocity = { x: 0, y: 1 }; break;  // Baixo
+            }
+        }
+    </script>
 </body>
 </html>
